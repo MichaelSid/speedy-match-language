@@ -1,4 +1,4 @@
-// Your Spanish-English word list
+// Spanish-English word list
 const words = [
   { spanish: "Encontrar", english: "To find" },
   { spanish: "Llegar a ser", english: "To become" },
@@ -42,36 +42,56 @@ const words = [
   { spanish: "incorrecto", english: "wrong" }
 ];
 
+// Game variables
 let score = 0;
-let time = 60;
+let time;
 let timerInterval;
+let availableIndices = [];
 
-function startGame() {
+// Difficulty settings
+const difficulties = {
+  easy: 120,
+  medium: 60,
+  hard: 30
+};
+
+// Start the game with selected difficulty
+function startGame(difficulty) {
   score = 0;
-  time = 60;
+  time = difficulties[difficulty];
+  availableIndices = [...Array(words.length).keys()];
   document.getElementById('score').textContent = 'Score: 0';
-  document.getElementById('timer').textContent = 'Time: 60';
-  document.getElementById('start').style.display = 'none';
+  document.getElementById('timer').textContent = 'Time: ' + time;
+  document.getElementById('difficulty-selection').style.display = 'none';
   timerInterval = setInterval(updateTimer, 1000);
   nextQuestion();
 }
 
+// Update the timer every second
 function updateTimer() {
   time--;
   document.getElementById('timer').textContent = 'Time: ' + time;
   if (time <= 0) {
     clearInterval(timerInterval);
     alert('Game Over! Your score: ' + score);
-    document.getElementById('start').style.display = 'block';
+    document.getElementById('difficulty-selection').style.display = 'block';
   }
 }
 
+// Display the next question
 function nextQuestion() {
   if (time <= 0) return;
-  const randomIndex = Math.floor(Math.random() * words.length);
-  const word = words[randomIndex];
+
+  if (availableIndices.length === 0) {
+    availableIndices = [...Array(words.length).keys()];
+  }
+
+  const randomPos = Math.floor(Math.random() * availableIndices.length);
+  const index = availableIndices.splice(randomPos, 1)[0];
+  const word = words[index];
+
   document.getElementById('spanish-word').textContent = word.spanish;
-  
+
   const options = [word.english];
   while (options.length < 4) {
     const randomOption = words[Math.floor(Math.random() * words.length)].english;
@@ -80,7 +100,7 @@ function nextQuestion() {
     }
   }
   shuffle(options);
-  
+
   const optionsDiv = document.getElementById('options');
   optionsDiv.innerHTML = '';
   options.forEach(option => {
@@ -91,16 +111,19 @@ function nextQuestion() {
   });
 }
 
+// Check the selected answer
 function checkAnswer(selected, correct) {
   if (selected === correct) {
     score += 10;
     document.getElementById('score').textContent = 'Score: ' + score;
   } else {
-    time -= 5;
+    time = Math.max(0, time - 5); // Subtract 5 seconds for incorrect answer
+    document.getElementById('timer').textContent = 'Time: ' + time;
   }
   nextQuestion();
 }
 
+// Shuffle the options array
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -108,4 +131,7 @@ function shuffle(array) {
   }
 }
 
-document.getElementById('start').addEventListener('click', startGame);
+// Add event listeners for difficulty selection
+document.getElementById('easy').addEventListener('click', () => startGame('easy'));
+document.getElementById('medium').addEventListener('click', () => startGame('medium'));
+document.getElementById('hard').addEventListener('click', () => startGame('hard'));
