@@ -7,11 +7,32 @@
 <body>
   <div id="game">
     <h1>Speedy Match</h1>
-    <div id="spanish-word"></div>
-    <div id="options"></div>
-    <div id="score">Score: 0</div>
-    <div id="timer">Time: 60</div>
-    <button id="start">Start Game</button>
+
+    <!-- Word List Input -->
+    <div id="word-input">
+      <h2>Enter Your Word List</h2>
+      <p>Format: Spanish,English (one pair per line)</p>
+      <textarea id="word-list" rows="5" placeholder="e.g. Encontrar,To find\nGirar,To turn"></textarea>
+    </div>
+
+    <!-- Difficulty Selection -->
+    <div id="difficulty-selection">
+      <h2>Select Difficulty</h2>
+      <select id="difficulty">
+        <option value="easy">Easy (120 seconds)</option>
+        <option value="medium" selected>Medium (60 seconds)</option>
+        <option value="hard">Hard (30 seconds)</option>
+      </select>
+      <button id="start">Start Game</button>
+    </div>
+
+    <!-- Game Area -->
+    <div id="game-area" style="display: none;">
+      <div id="spanish-word"></div>
+      <div id="options"></div>
+      <div id="score">Score: 0</div>
+      <div id="timer">Time: 60</div>
+    </div>
   </div>
   <script src="script.js"></script>
 </body>
