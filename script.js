@@ -4,6 +4,7 @@ let score = 0;
 let time;
 let timerInterval;
 let availableIndices = [];
+let lastScore = 0;
 
 // Difficulty settings
 const difficulties = {
@@ -16,6 +17,25 @@ const difficulties = {
 const correctSound = document.getElementById('correct-sound');
 const incorrectSound = document.getElementById('incorrect-sound');
 
+// Initialize scoreboard
+function initializeScoreboard() {
+  const bestScore = localStorage.getItem('bestScore') ? parseInt(localStorage.getItem('bestScore')) : 0;
+  lastScore = 0;
+  document.getElementById('last-score').textContent = 'Last Score: ' + lastScore;
+  document.getElementById('best-score').textContent = 'Best Score: ' + bestScore;
+}
+
+// Update scoreboard after game ends
+function updateScoreboard() {
+  lastScore = score;
+  const bestScore = localStorage.getItem('bestScore') ? parseInt(localStorage.getItem('bestScore')) : 0;
+  if (score > bestScore) {
+    localStorage.setItem('bestScore', score);
+  }
+  document.getElementById('last-score').textContent = 'Last Score: ' + lastScore;
+  document.getElementById('best-score').textContent = 'Best Score: ' + Math.max(score, bestScore);
+}
+
 // Start the game
 function startGame() {
   words = []; // Reset the word list
@@ -25,9 +45,9 @@ function startGame() {
   if (lineInput) {
     const lines = lineInput.split('\n');
     for (let line of lines) {
-      const [spanish, english] = line.split(',').map(item => item.trim());
-      if (spanish && english) {
-        words.push({ spanish, english });
+      const [english, spanish] = line.split(',').map(item => item.trim());
+      if (english && spanish) {
+        words.push({ spanish, english }); // Store as { spanish, english } for gameplay
       }
     }
   }
@@ -35,25 +55,20 @@ function startGame() {
   // Parse Option 2: Spreadsheet Input
   const spreadsheetInput = document.getElementById('word-list-spreadsheet').value.trim();
   if (spreadsheetInput) {
-    // Split into lines
     const lines = spreadsheetInput.split('\n');
     for (let line of lines) {
-      // Try splitting by tabs (TSV) first
       let pairs = line.split('\t').map(item => item.trim());
       if (pairs.length === 2 && pairs[0] && pairs[1]) {
-        // Tab-separated: one pair per line
-        const [spanish, english] = pairs;
-        words.push({ spanish, english });
+        const [english, spanish] = pairs;
+        words.push({ spanish, english }); // Store as { spanish, english } for gameplay
       } else {
-        // Try splitting by commas (CSV)
         pairs = line.split(',').map(item => item.trim());
         if (pairs.length >= 2 && pairs.length % 2 === 0) {
-          // Comma-separated: multiple pairs in one line
           for (let i = 0; i < pairs.length; i += 2) {
-            const spanish = pairs[i];
-            const english = pairs[i + 1];
-            if (spanish && english) {
-              words.push({ spanish, english });
+            const english = pairs[i];
+            const spanish = pairs[i + 1];
+            if (english && spanish) {
+              words.push({ spanish, english }); // Store as { spanish, english } for gameplay
             }
           }
         }
@@ -62,7 +77,7 @@ function startGame() {
   }
 
   // Validate the word list
-  if FIXED: words.length === 0) {
+  if (words.length === 0) {
     alert('No valid word pairs found. Please enter pairs using one of the methods provided.');
     return;
   }
@@ -90,6 +105,7 @@ function updateTimer() {
   document.getElementById('timer').textContent = 'Time: ' + time;
   if (time <= 0) {
     clearInterval(timerInterval);
+    updateScoreboard();
     alert('Game Over! Your score: ' + score);
     document.getElementById('word-input').style.display = 'block';
     document.getElementById('difficulty-selection').style.display = 'block';
@@ -109,6 +125,7 @@ function nextQuestion() {
   const index = availableIndices.splice(randomPos, 1)[0];
   const word = words[index];
 
+  // Display the Spanish word and provide English options
   document.getElementById('spanish-word').textContent = word.spanish;
 
   const options = [word.english];
@@ -153,6 +170,9 @@ function shuffle(array) {
     [array[i], array[j]] = [array[j], array[i]];
   }
 }
+
+// Initialize scoreboard on page load
+initializeScoreboard();
 
 // Add event listener for the start button
 document.getElementById('start').addEventListener('click', startGame);
