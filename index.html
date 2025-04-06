@@ -11,8 +11,17 @@
     <!-- Word List Input -->
     <div id="word-input">
       <h2>Enter Your Word List</h2>
+      <p>Choose one of the following methods to input your Spanish-English word pairs:</p>
+
+      <!-- Option 1: Line-by-Line Input -->
+      <h3>Option 1: Line-by-Line (Comma-Separated)</h3>
       <p>Format: Spanish,English (one pair per line)</p>
-      <textarea id="word-list" rows="5" placeholder="e.g. Encontrar,To find\nGirar,To turn"></textarea>
+      <textarea id="word-list-line" rows="5" placeholder="e.g. Encontrar,To find\nGirar,To turn"></textarea>
+
+      <!-- Option 2: Spreadsheet Paste -->
+      <h3>Option 2: Paste from Spreadsheet</h3>
+      <p>Copy two columns (Spanish and English) from a spreadsheet. Tabs or commas between words are automatically detected.</p>
+      <textarea id="word-list-spreadsheet" rows="5" placeholder="e.g. Hola\tHello\nAdiós\tGoodbye\nOR\nHola,Hello,Adiós,Goodbye"></textarea>
     </div>
 
     <!-- Difficulty Selection -->
