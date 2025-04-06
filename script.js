@@ -18,25 +18,52 @@ const incorrectSound = document.getElementById('incorrect-sound');
 
 // Start the game
 function startGame() {
-  // Parse the word list from the textarea
-  const wordInput = document.getElementById('word-list').value.trim();
-  if (!wordInput) {
-    alert('Please enter at least one word pair to start the game!');
-    return;
-  }
+  words = []; // Reset the word list
 
-  // Split the input into lines and create the word list
-  words = [];
-  const lines = wordInput.split('\n');
-  for (let line of lines) {
-    const [spanish, english] = line.split(',').map(item => item.trim());
-    if (spanish && english) {
-      words.push({ spanish, english });
+  // Parse Option 1: Line-by-Line Input
+  const lineInput = document.getElementById('word-list-line').value.trim();
+  if (lineInput) {
+    const lines = lineInput.split('\n');
+    for (let line of lines) {
+      const [spanish, english] = line.split(',').map(item => item.trim());
+      if (spanish && english) {
+        words.push({ spanish, english });
+      }
     }
   }
 
-  if (words.length === 0) {
-    alert('No valid word pairs found. Please use the format: Spanish,English (one pair per line).');
+  // Parse Option 2: Spreadsheet Input
+  const spreadsheetInput = document.getElementById('word-list-spreadsheet').value.trim();
+  if (spreadsheetInput) {
+    // Split into lines
+    const lines = spreadsheetInput.split('\n');
+    for (let line of lines) {
+      // Try splitting by tabs (TSV) first
+      let pairs = line.split('\t').map(item => item.trim());
+      if (pairs.length === 2 && pairs[0] && pairs[1]) {
+        // Tab-separated: one pair per line
+        const [spanish, english] = pairs;
+        words.push({ spanish, english });
+      } else {
+        // Try splitting by commas (CSV)
+        pairs = line.split(',').map(item => item.trim());
+        if (pairs.length >= 2 && pairs.length % 2 === 0) {
+          // Comma-separated: multiple pairs in one line
+          for (let i = 0; i < pairs.length; i += 2) {
+            const spanish = pairs[i];
+            const english = pairs[i + 1];
+            if (spanish && english) {
+              words.push({ spanish, english });
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Validate the word list
+  if FIXED: words.length === 0) {
+    alert('No valid word pairs found. Please enter pairs using one of the methods provided.');
     return;
   }
 
@@ -108,13 +135,13 @@ function checkAnswer(selected, correct) {
   if (selected === correct) {
     score += 10;
     document.getElementById('score').textContent = 'Score: ' + score;
-    correctSound.currentTime = 0; // Reset sound to start
-    correctSound.play(); // Play correct sound
+    correctSound.currentTime = 0;
+    correctSound.play();
   } else {
     time = Math.max(0, time - 5);
     document.getElementById('timer').textContent = 'Time: ' + time;
-    incorrectSound.currentTime = 0; // Reset sound to start
-    incorrectSound.play(); // Play incorrect sound
+    incorrectSound.currentTime = 0;
+    incorrectSound.play();
   }
   nextQuestion();
 }
