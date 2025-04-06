@@ -1,48 +1,5 @@
-// Spanish-English word list
-const words = [
-  { spanish: "Encontrar", english: "To find" },
-  { spanish: "Llegar a ser", english: "To become" },
-  { spanish: "Dejar", english: "To leave" },
-  { spanish: "Dejar", english: "To let" },
-  { spanish: "Girar", english: "To turn" },
-  { spanish: "Mostrar", english: "To show" },
-  { spanish: "Tocar", english: "To play" },
-  { spanish: "Sostener", english: "To hold" },
-  { spanish: "Traer", english: "To bring" },
-  { spanish: "Suceder", english: "To happen" },
-  { spanish: "Proveer", english: "To provide" },
-  { spanish: "Estar de pie", english: "To stand" },
-  { spanish: "Reunirse", english: "To meet" },
-  { spanish: "Establecer", english: "To set" },
-  { spanish: "Dirigir", english: "To lead" },
-  { spanish: "Comprender", english: "To understand" },
-  { spanish: "Seguir", english: "To follow" },
-  { spanish: "Detener", english: "To stop" },
-  { spanish: "Añadir", english: "To add" },
-  { spanish: "Gastar", english: "To spend" },
-  { spanish: "Crecer", english: "To grow" },
-  { spanish: "Recordar", english: "To remember" },
-  { spanish: "Considerar", english: "To consider" },
-  { spanish: "Enviar", english: "To send" },
-  { spanish: "Esperar", english: "To expect" },
-  { spanish: "Permanecer", english: "To stay" },
-  { spanish: "Caer", english: "To fall" },
-  { spanish: "Cortar", english: "To cut" },
-  { spanish: "Alcanzar", english: "To reach" },
-  { spanish: "Permanecer", english: "To remain" },
-  { spanish: "Sugerir", english: "To suggest" },
-  { spanish: "Levantar", english: "To raise" },
-  { spanish: "Informar", english: "To report" },
-  { spanish: "Tirar", english: "To pull" },
-  { spanish: "temprano", english: "early" },
-  { spanish: "capaz", english: "able" },
-  { spanish: "reciente", english: "recent" },
-  { spanish: "probable", english: "likely" },
-  { spanish: "único", english: "single" },
-  { spanish: "incorrecto", english: "wrong" }
-];
-
 // Game variables
+let words = [];
 let score = 0;
 let time;
 let timerInterval;
@@ -55,14 +12,43 @@ const difficulties = {
   hard: 30
 };
 
-// Start the game with selected difficulty
-function startGame(difficulty) {
+// Start the game
+function startGame() {
+  // Parse the word list from the textarea
+  const wordInput = document.getElementById('word-list').value.trim();
+  if (!wordInput) {
+    alert('Please enter at least one word pair to start the game!');
+    return;
+  }
+
+  // Split the input into lines and create the word list
+  words = [];
+  const lines = wordInput.split('\n');
+  for (let line of lines) {
+    const [spanish, english] = line.split(',').map(item => item.trim());
+    if (spanish && english) {
+      words.push({ spanish, english });
+    }
+  }
+
+  if (words.length === 0) {
+    alert('No valid word pairs found. Please use the format: Spanish,English (one pair per line).');
+    return;
+  }
+
+  // Get the selected difficulty
+  const difficulty = document.getElementById('difficulty').value;
   score = 0;
   time = difficulties[difficulty];
   availableIndices = [...Array(words.length).keys()];
   document.getElementById('score').textContent = 'Score: 0';
   document.getElementById('timer').textContent = 'Time: ' + time;
+
+  // Hide word input and difficulty selection, show game area
+  document.getElementById('word-input').style.display = 'none';
   document.getElementById('difficulty-selection').style.display = 'none';
+  document.getElementById('game-area').style.display = 'block';
+
   timerInterval = setInterval(updateTimer, 1000);
   nextQuestion();
 }
@@ -74,7 +60,9 @@ function updateTimer() {
   if (time <= 0) {
     clearInterval(timerInterval);
     alert('Game Over! Your score: ' + score);
+    document.getElementById('word-input').style.display = 'block';
     document.getElementById('difficulty-selection').style.display = 'block';
+    document.getElementById('game-area').style.display = 'none';
   }
 }
 
@@ -117,7 +105,7 @@ function checkAnswer(selected, correct) {
     score += 10;
     document.getElementById('score').textContent = 'Score: ' + score;
   } else {
-    time = Math.max(0, time - 5); // Subtract 5 seconds for incorrect answer
+    time = Math.max(0, time - 5);
     document.getElementById('timer').textContent = 'Time: ' + time;
   }
   nextQuestion();
@@ -131,7 +119,5 @@ function shuffle(array) {
   }
 }
 
-// Add event listeners for difficulty selection
-document.getElementById('easy').addEventListener('click', () => startGame('easy'));
-document.getElementById('medium').addEventListener('click', () => startGame('medium'));
-document.getElementById('hard').addEventListener('click', () => startGame('hard'));
+// Add event listener for the start button
+document.getElementById('start').addEventListener('click', startGame);
