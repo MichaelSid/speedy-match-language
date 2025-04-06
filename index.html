@@ -20,8 +20,8 @@
 
       <!-- Option 2: Spreadsheet Paste -->
       <h3>Option 2: Paste from Spreadsheet</h3>
-      <p>Copy two columns (English and Spanish) from a spreadsheet. Tabs or commas between words are automatically detected.</p>
-      <textarea id="word-list-spreadsheet" rows="5" placeholder="e.g. Hello\tHola\nGoodbye\tAdiós\nOR\nHello,Hola,Goodbye,Adiós"></textarea>
+      <p>Copy two columns (English and Spanish) from a spreadsheet. Tabs or commas between words are automatically detected. You can also paste one pair per line (e.g., English,Spanish).</p>
+      <textarea id="word-list-spreadsheet" rows="5" placeholder="e.g. Hello\tHola\nGoodbye\tAdiós\nOR\nHello,Hola\nGoodbye,Adiós"></textarea>
     </div>
 
     <!-- Difficulty Selection -->
@@ -51,4 +51,9 @@
     </div>
 
     <!-- Audio Elements -->
-    <audio id="correct-sound" src
+    <audio id="correct-sound" src="correct.mp3" preload="auto"></audio>
+    <audio id="incorrect-sound" src="incorrect.mp3" preload="auto"></audio>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
