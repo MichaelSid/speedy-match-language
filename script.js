@@ -40,14 +40,33 @@ function updateScoreboard() {
 function startGame() {
   words = []; // Reset the word list
 
+  // Helper function to parse a single line of input
+  function parseLine(line) {
+    // Try splitting by tabs (TSV)
+    let pairs = line.split('\t').map(item => item.trim());
+    if (pairs.length === 2 && pairs[0] && pairs[1]) {
+      const [english, spanish] = pairs;
+      return { spanish, english };
+    }
+
+    // Try splitting by commas (CSV)
+    pairs = line.split(',').map(item => item.trim());
+    if (pairs.length === 2 && pairs[0] && pairs[1]) {
+      const [english, spanish] = pairs;
+      return { spanish, english };
+    }
+
+    return null; // Invalid pair
+  }
+
   // Parse Option 1: Line-by-Line Input
   const lineInput = document.getElementById('word-list-line').value.trim();
   if (lineInput) {
     const lines = lineInput.split('\n');
     for (let line of lines) {
-      const [english, spanish] = line.split(',').map(item => item.trim());
-      if (english && spanish) {
-        words.push({ spanish, english }); // Store as { spanish, english } for gameplay
+      const pair = parseLine(line);
+      if (pair) {
+        words.push(pair);
       }
     }
   }
@@ -57,18 +76,18 @@ function startGame() {
   if (spreadsheetInput) {
     const lines = spreadsheetInput.split('\n');
     for (let line of lines) {
-      let pairs = line.split('\t').map(item => item.trim());
-      if (pairs.length === 2 && pairs[0] && pairs[1]) {
-        const [english, spanish] = pairs;
-        words.push({ spanish, english }); // Store as { spanish, english } for gameplay
+      const pair = parseLine(line);
+      if (pair) {
+        words.push(pair);
       } else {
-        pairs = line.split(',').map(item => item.trim());
+        // If the line has more than 2 items and an even number, treat it as multiple comma-separated pairs
+        const pairs = line.split(',').map(item => item.trim());
         if (pairs.length >= 2 && pairs.length % 2 === 0) {
           for (let i = 0; i < pairs.length; i += 2) {
             const english = pairs[i];
             const spanish = pairs[i + 1];
             if (english && spanish) {
-              words.push({ spanish, english }); // Store as { spanish, english } for gameplay
+              words.push({ spanish, english });
             }
           }
         }
@@ -78,7 +97,7 @@ function startGame() {
 
   // Validate the word list
   if (words.length === 0) {
-    alert('No valid word pairs found. Please enter pairs using one of the methods provided.');
+    alert('No valid word pairs found. Please ensure your input follows the format English,Spanish (one pair per line for line-by-line input, or tab/comma-separated for spreadsheet input).');
     return;
   }
 
