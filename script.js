@@ -12,6 +12,10 @@ const difficulties = {
   hard: 30
 };
 
+// Audio elements
+const correctSound = document.getElementById('correct-sound');
+const incorrectSound = document.getElementById('incorrect-sound');
+
 // Start the game
 function startGame() {
   // Parse the word list from the textarea
@@ -104,9 +108,13 @@ function checkAnswer(selected, correct) {
   if (selected === correct) {
     score += 10;
     document.getElementById('score').textContent = 'Score: ' + score;
+    correctSound.currentTime = 0; // Reset sound to start
+    correctSound.play(); // Play correct sound
   } else {
     time = Math.max(0, time - 5);
     document.getElementById('timer').textContent = 'Time: ' + time;
+    incorrectSound.currentTime = 0; // Reset sound to start
+    incorrectSound.play(); // Play incorrect sound
   }
   nextQuestion();
 }
