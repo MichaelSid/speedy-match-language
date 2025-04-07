@@ -8,30 +8,22 @@
   <div id="game">
     <h1>Speedy Match</h1>
 
-    <!-- Word List Input -->
-    <div id="word-input">
-      <h2>Enter Your Word List</h2>
-      <p>Choose one of the following methods to input your English-Second Language word pairs (you’ll match Second Language words to English translations):</p>
+    <!-- Setup Section: Word Input and Start Button -->
+    <div id="setup">
+      <div id="word-input">
+        <h2>Enter Your Word List</h2>
+        <p>Choose one of the following methods to input your English-Second Language word pairs (you’ll match Second Language words to English translations):</p>
 
-      <!-- Option 1: Line-by-Line Input -->
-      <h3>Option 1: Line-by-Line (Comma-Separated)</h3>
-      <p>Format: English,Second Language (one pair per line)</p>
-      <textarea id="word-list-line" rows="5" placeholder="e.g. To find,Encontrar (Spanish)\nOR\nTo find,Trouver (French)"></textarea>
+        <!-- Option 1: Line-by-Line Input -->
+        <h3>Option 1: Line-by-Line (Comma-Separated)</h3>
+        <p>Format: English,Second Language (one pair per line)</p>
+        <textarea id="word-list-line" rows="5" placeholder="e.g. To find,Encontrar (Spanish)\nOR\nTo find,Trouver (French)"></textarea>
 
-      <!-- Option 2: Spreadsheet Paste -->
-      <h3>Option 2: Paste from Spreadsheet</h3>
-      <p>Copy two columns (English and Second Language) from a spreadsheet. Tabs or commas between words are automatically detected. You can also paste one pair per line (e.g., English,Second Language).</p>
-      <textarea id="word-list-spreadsheet" rows="5" placeholder="e.g. Hello\tHola (Spanish)\nGoodbye\tAdiós\nOR\nHello,Trouver (French)\nGoodbye,Au revoir"></textarea>
-    </div>
-
-    <!-- Difficulty Selection -->
-    <div id="difficulty-selection">
-      <h2>Select Difficulty</h2>
-      <select id="difficulty">
-        <option value="easy">Easy (120 seconds)</option>
-        <option value="medium" selected>Medium (60 seconds)</option>
-        <option value="hard">Hard (30 seconds)</option>
-      </select>
+        <!-- Option 2: Spreadsheet Paste -->
+        <h3>Option 2: Paste from Spreadsheet</h3>
+        <p>Copy two columns (English and Second Language) from a spreadsheet. Tabs or commas between words are automatically detected. You can also paste one pair per line (e.g., English,Second Language).</p>
+        <textarea id="word-list-spreadsheet" rows="5" placeholder="e.g. Hello\tHola (Spanish)\nGoodbye\tAdiós\nOR\nHello,Trouver (French)\nGoodbye,Au revoir"></textarea>
+      </div>
       <button id="start">Start Game</button>
     </div>
 
@@ -40,7 +32,7 @@
       <div id="second-lang-word"></div>
       <div id="options"></div>
       <div id="score">Score: 0</div>
-      <div id="timer">Time: 60</div>
+      <div id="timer">Time: 0</div>
     </div>
 
     <!-- Scoreboard -->
