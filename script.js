@@ -6,13 +6,6 @@ let timerInterval;
 let availableIndices = [];
 let lastScore = 0;
 
-// Difficulty settings
-const difficulties = {
-  easy: 120,
-  medium: 60,
-  hard: 30
-};
-
 // Audio elements
 const correctSound = document.getElementById('correct-sound');
 const incorrectSound = document.getElementById('incorrect-sound');
@@ -80,7 +73,7 @@ function startGame() {
       if (pair) {
         words.push(pair);
       } else {
-        // If the line has more than 2 items and an even number, treat it as multiple comma-separated pairs
+        // Handle multiple comma-separated pairs on one line
         const pairs = line.split(',').map(item => item.trim());
         if (pairs.length >= 2 && pairs.length % 2 === 0) {
           for (let i = 0; i < pairs.length; i += 2) {
@@ -101,17 +94,15 @@ function startGame() {
     return;
   }
 
-  // Get the selected difficulty
-  const difficulty = document.getElementById('difficulty').value;
+  // Set game time based on number of word pairs
+  time = Math.max(30, 3 * words.length);
   score = 0;
-  time = difficulties[difficulty];
   availableIndices = [...Array(words.length).keys()];
   document.getElementById('score').textContent = 'Score: 0';
   document.getElementById('timer').textContent = 'Time: ' + time;
 
-  // Hide word input and difficulty selection, show game area
-  document.getElementById('word-input').style.display = 'none';
-  document.getElementById('difficulty-selection').style.display = 'none';
+  // Hide setup and show game area
+  document.getElementById('setup').style.display = 'none';
   document.getElementById('game-area').style.display = 'block';
 
   timerInterval = setInterval(updateTimer, 1000);
@@ -126,8 +117,7 @@ function updateTimer() {
     clearInterval(timerInterval);
     updateScoreboard();
     alert('Game Over! Your score: ' + score);
-    document.getElementById('word-input').style.display = 'block';
-    document.getElementById('difficulty-selection').style.display = 'block';
+    document.getElementById('setup').style.display = 'block';
     document.getElementById('game-area').style.display = 'none';
   }
 }
