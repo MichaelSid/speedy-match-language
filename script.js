@@ -5,6 +5,7 @@ let time;
 let timerInterval;
 let availableIndices = [];
 let lastScore = 0;
+let lastScorePerPair = 0;
 
 // Audio elements
 const correctSound = document.getElementById('correct-sound');
@@ -13,20 +14,33 @@ const incorrectSound = document.getElementById('incorrect-sound');
 // Initialize scoreboard
 function initializeScoreboard() {
   const bestScore = localStorage.getItem('bestScore') ? parseInt(localStorage.getItem('bestScore')) : 0;
+  const bestScorePerPair = localStorage.getItem('bestScorePerPair') ? parseFloat(localStorage.getItem('bestScorePerPair')) : 0;
   lastScore = 0;
+  lastScorePerPair = 0;
   document.getElementById('last-score').textContent = 'Last Score: ' + lastScore;
+  document.getElementById('last-score-per-pair').textContent = 'Last Score per Pair: ' + lastScorePerPair.toFixed(2);
   document.getElementById('best-score').textContent = 'Best Score: ' + bestScore;
+  document.getElementById('best-score-per-pair').textContent = 'Best Score per Pair: ' + bestScorePerPair.toFixed(2);
 }
 
 // Update scoreboard after game ends
 function updateScoreboard() {
   lastScore = score;
+  lastScorePerPair = words.length > 0 ? score / words.length : 0;
   const bestScore = localStorage.getItem('bestScore') ? parseInt(localStorage.getItem('bestScore')) : 0;
+  const bestScorePerPair = localStorage.getItem('bestScorePerPair') ? parseFloat(localStorage.getItem('bestScorePerPair')) : 0;
+  
   if (score > bestScore) {
     localStorage.setItem('bestScore', score);
   }
+  if (lastScorePerPair > bestScorePerPair) {
+    localStorage.setItem('bestScorePerPair', lastScorePerPair);
+  }
+  
   document.getElementById('last-score').textContent = 'Last Score: ' + lastScore;
+  document.getElementById('last-score-per-pair').textContent = 'Last Score per Pair: ' + lastScorePerPair.toFixed(2);
   document.getElementById('best-score').textContent = 'Best Score: ' + Math.max(score, bestScore);
+  document.getElementById('best-score-per-pair').textContent = 'Best Score per Pair: ' + Math.max(lastScorePerPair, bestScorePerPair).toFixed(2);
 }
 
 // Start the game
@@ -52,19 +66,7 @@ function startGame() {
     return null; // Invalid pair
   }
 
-  // Parse Option 1: Line-by-Line Input
-  const lineInput = document.getElementById('word-list-line').value.trim();
-  if (lineInput) {
-    const lines = lineInput.split('\n');
-    for (let line of lines) {
-      const pair = parseLine(line);
-      if (pair) {
-        words.push(pair);
-      }
-    }
-  }
-
-  // Parse Option 2: Spreadsheet Input
+  // Parse Spreadsheet Input
   const spreadsheetInput = document.getElementById('word-list-spreadsheet').value.trim();
   if (spreadsheetInput) {
     const lines = spreadsheetInput.split('\n');
@@ -90,7 +92,7 @@ function startGame() {
 
   // Validate the word list
   if (words.length === 0) {
-    alert('No valid word pairs found. Please ensure your input follows the format English,Second Language (one pair per line for line-by-line input, or tab/comma-separated for spreadsheet input).');
+    alert('No valid word pairs found. Please ensure your input follows the format English,Second Language (one pair per line, or tab/comma-separated).');
     return;
   }
 
