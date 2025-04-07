@@ -45,15 +45,15 @@ function startGame() {
     // Try splitting by tabs (TSV)
     let pairs = line.split('\t').map(item => item.trim());
     if (pairs.length === 2 && pairs[0] && pairs[1]) {
-      const [english, spanish] = pairs;
-      return { spanish, english };
+      const [english, secondLang] = pairs;
+      return { secondLang, english };
     }
 
     // Try splitting by commas (CSV)
     pairs = line.split(',').map(item => item.trim());
     if (pairs.length === 2 && pairs[0] && pairs[1]) {
-      const [english, spanish] = pairs;
-      return { spanish, english };
+      const [english, secondLang] = pairs;
+      return { secondLang, english };
     }
 
     return null; // Invalid pair
@@ -85,9 +85,9 @@ function startGame() {
         if (pairs.length >= 2 && pairs.length % 2 === 0) {
           for (let i = 0; i < pairs.length; i += 2) {
             const english = pairs[i];
-            const spanish = pairs[i + 1];
-            if (english && spanish) {
-              words.push({ spanish, english });
+            const secondLang = pairs[i + 1];
+            if (english && secondLang) {
+              words.push({ secondLang, english });
             }
           }
         }
@@ -97,7 +97,7 @@ function startGame() {
 
   // Validate the word list
   if (words.length === 0) {
-    alert('No valid word pairs found. Please ensure your input follows the format English,Spanish (one pair per line for line-by-line input, or tab/comma-separated for spreadsheet input).');
+    alert('No valid word pairs found. Please ensure your input follows the format English,Second Language (one pair per line for line-by-line input, or tab/comma-separated for spreadsheet input).');
     return;
   }
 
@@ -144,8 +144,8 @@ function nextQuestion() {
   const index = availableIndices.splice(randomPos, 1)[0];
   const word = words[index];
 
-  // Display the Spanish word and provide English options
-  document.getElementById('spanish-word').textContent = word.spanish;
+  // Display the Second Language word and provide English options
+  document.getElementById('second-lang-word').textContent = word.secondLang;
 
   const options = [word.english];
   while (options.length < 4) {
